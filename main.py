@@ -72,17 +72,27 @@ for epoch in range(1, nb_epoch + 1):
     train_loss = 0
     # counter
     c = 0.
+
+    # Loops through bathes of users equal to batch_size
     for id_user in range(0, nb_users - batch_size, batch_size):
+        # Stores original visible nodes
         vk = training_set[id_user:id_user + batch_size]
         v0 = training_set[id_user:id_user + batch_size]
         ph0, _ = rbm.sample_h(v0)
+        # Performs contrastive divergence on the batch
         for k in range(10):
             _, hk = rbm.sample_h(vk)
             _, vk = rbm.sample_v(hk)
             vk[v0 < 0] = v0[v0 < 0]
         phk, _ = rbm.sample_h(vk)
+        # Update the rbm weights and bias through training
         rbm.train(v0, vk, ph0, phk)
+        # Calculate the loss for analysis
         train_loss += torch.mean(torch.abs(v0[v0 > 0] - vk[v0 > 0]))
+        # Add 1 to the counter after every batch completes
         c += 1.
+    # loss is normalized using the counter
     normalized_loss = train_loss/c
+
+    # Outputs the user the results of the training
     print('epoch: {ce}/{tc} loss: {l}'.format(ce=epoch, tc=nb_epoch, l=normalized_loss))
