@@ -24,7 +24,7 @@ class RBM():
     # Return probabilities of the visible nodes given y (hidden nodes)
     def sample_v(self, y):
         wy = torch.mm(y, self.W)
-        activation = wy + self.a.expand_as(wy)
+        activation = wy + self.b.expand_as(wy)
         p_v_given_h = torch.sigmoid(activation)
         return p_v_given_h, torch.bernoulli(p_v_given_h)
 

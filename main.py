@@ -7,7 +7,7 @@ import torch.nn.parallel
 import torch.optim as optim
 import torch.utils.data
 from torch.autograd import Variable
-import RBM
+from RBM import RBM
 
 # Import the dataset
 movies = pd.read_csv('data/ml-1m/movies.dat', sep='::', header=None, engine='python', encoding='latin-1')
@@ -62,5 +62,21 @@ nh = 100
 batch_size = 100
 rbm = RBM(nv=nv, nh=nh)
 
+# Train the RBM
+# Number of epochs to train the RBM
+nb_epoch = 10
 
+# Loops through every epoch
+for epoch in range(1, nb_epoch + 1):
+    # loss error
+    train_loss = 0
+    # counter
+    c = 0.
+    for id_user in range(0, nb_users - batch_size, batch_size):
+        vk = training_set[id_user:id_user + batch_size]
+        v0 = training_set[id_user:id_user + batch_size]
+        ph0, _ = rbm.sample_h(v0)
+        for k in range(10):
+            _, hk = rbm.sample_h(vk)
+            _, vk = rbm.sample_v(hk)
 
