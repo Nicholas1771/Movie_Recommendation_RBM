@@ -34,6 +34,6 @@ class RBM():
     # ph0 - vector of probabilities that the hidden nodes = 1 given the values of v0
     # phk - vector of probabilities that the hidden nodes = 1 after k iterations
     def train(self, v0, vk, ph0, phk):
-        self.W += torch.mm(v0.t(), ph0) - torch.mm(vk.t(), phk)
+        self.W += (torch.mm(v0.t(), ph0) - torch.mm(vk.t(), phk)).t()
         self.b += torch.sum((v0 - vk), 0)
         self.a += torch.sum((ph0 - phk), 0)

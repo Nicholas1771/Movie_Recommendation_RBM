@@ -79,4 +79,10 @@ for epoch in range(1, nb_epoch + 1):
         for k in range(10):
             _, hk = rbm.sample_h(vk)
             _, vk = rbm.sample_v(hk)
-
+            vk[v0 < 0] = v0[v0 < 0]
+        phk, _ = rbm.sample_h(vk)
+        rbm.train(v0, vk, ph0, phk)
+        train_loss += torch.mean(torch.abs(v0[v0 > 0] - vk[v0 > 0]))
+        c += 1.
+    normalized_loss = train_loss/c
+    print('epoch: {ce}/{tc} loss: {l}'.format(ce=epoch, tc=nb_epoch, l=normalized_loss))
