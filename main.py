@@ -96,3 +96,26 @@ for epoch in range(1, nb_epoch + 1):
 
     # Outputs the user the results of the training
     print('epoch: {ce}/{tc} loss: {l}'.format(ce=epoch, tc=nb_epoch, l=normalized_loss))
+
+# Predict the test set
+# Test loss error
+test_loss = 0
+# Reset counter
+c = 0.
+for id_user in range(nb_users):
+    # Get initial visible nodes
+    v = training_set[id_user:id_user+1]
+    vt = test_set[id_user:id_user+1]
+    # Checks if the user has rated any movies
+    if len(vt[vt > 0] > 0):
+        # Perform 1 step of gibs sampling on the user
+        _, h = rbm.sample_h(v)
+        _, v = rbm.sample_v(h)
+        # Update the test loss
+        test_loss += torch.mean(torch.abs(vt[vt > 0] - v[vt > 0]))
+        # Add to the counter
+        c += 1.
+# Normalize the test loss
+normalized_test_loss = test_loss/c
+print('test loss: {tl}'.format(tl=normalized_test_loss))
+
